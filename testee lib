@@ -8,7 +8,7 @@ local Players = game:GetService("Players")
 local Player = Players.LocalPlayer
 local PlayerMouse = Player:GetMouse()
 
-local antoralib = {
+local destroyerlib = {
     Themes = {
         Classic = {
             ["Color Hub 1"] = ColorSequence.new({
@@ -45,12 +45,12 @@ local antoralib = {
 local ViewportSize = workspace.CurrentCamera.ViewportSize
 local UIScale = ViewportSize.Y / 450
 
-local Settings = antoralib.Settings
-local Flags = antoralib.Flags
+local Settings = destroyerlib.Settings
+local Flags = destroyerlib.Flags
 
 local SetProps, SetChildren, InsertTheme, Create do
 	InsertTheme = function(Instance, Type)
-		table.insert(antoralib.Instances, {
+		table.insert(destroyerlib.Instances, {
 			Instance = Instance,
 			Type = Type
 		})
@@ -99,9 +99,9 @@ local SetProps, SetChildren, InsertTheme, Create do
 			local decode = HttpService:JSONDecode(readfile(file))
 			
 			if type(decode) == "table" then
-				if rawget(decode, "UISize") then antoralib.Save["UISize"] = decode["UISize"] end
-				if rawget(decode, "TabSize") then antoralib.Save["TabSize"] = decode["TabSize"] end
-				if rawget(decode, "Theme") and VerifyTheme(decode["Theme"]) then antoralib.Save["Theme"] = decode["Theme"] end
+				if rawget(decode, "UISize") then destroyerlib.Save["UISize"] = decode["UISize"] end
+				if rawget(decode, "TabSize") then destroyerlib.Save["TabSize"] = decode["TabSize"] end
+				if rawget(decode, "Theme") and VerifyTheme(decode["Theme"]) then destroyerlib.Save["Theme"] = decode["Theme"] end
 			end
 		end
 	end
@@ -166,7 +166,7 @@ local Funcs = {} do
 	end
 end
 
-local Connections, Connection = {}, antoralib.Connection do
+local Connections, Connection = {}, destroyerlib.Connection do
 	local function NewConnectionList(List)
 		if type(List) ~= "table" then return end
 		
@@ -332,7 +332,7 @@ local function MakeDrag(Instance)
 end
 
 local function VerifyTheme(Theme)
-	for name,_ in pairs(antoralib.Themes) do
+	for name,_ in pairs(destroyerlib.Themes) do
 		if name == Theme then
 			return true
 		end
@@ -346,14 +346,14 @@ local function SaveJson(FileName, save)
 	end
 end
 
-local Theme = antoralib.Themes[antoralib.Save.Theme]
+local Theme = destroyerlib.Themes[destroyerlib.Save.Theme]
 
 local function AddEle(Name, Func)
-	antoralib.Elements[Name] = Func
+	destroyerlib.Elements[Name] = Func
 end
 
 local function Make(Ele, Instance, props, ...)
-	local Element = antoralib.Elements[Ele](Instance, props, ...)
+	local Element = destroyerlib.Elements[Ele](Instance, props, ...)
 	return Element
 end
 
@@ -500,7 +500,7 @@ local function GetColor(Instance)
 end
 
 -- /////////// --
-function antoralib:GetIcon(index)
+function destroyerlib:GetIcon(index)
 	if type(index) ~= "string" or index:find("rbxassetid://") or #index == 0 then
 		return index
 	end
@@ -520,15 +520,15 @@ function antoralib:GetIcon(index)
 	return firstMatch or index
 end
 
-function antoralib:SetTheme(NewTheme)
+function destroyerlib:SetTheme(NewTheme)
 	if not VerifyTheme(NewTheme) then return end
 	
-	antoralib.Save.Theme = NewTheme
-	SaveJson("Antora Library.json", antoralib.Save)
-	Theme = antoralib.Themes[NewTheme]
+	destroyerlib.Save.Theme = NewTheme
+	SaveJson("Antora Library.json", destroyerlib.Save)
+	Theme = destroyerlib.Themes[NewTheme]
 	
 	Comnection:FireConnection("ThemeChanged", NewTheme)
-	table.foreach(antoralib.Instances, function(_,Val)
+	table.foreach(destroyerlib.Instances, function(_,Val)
 		if Val.Type == "Gradient" then
 			Val.Instance.Color = Theme["Color Hub 1"]
 		elseif Val.Type == "Frame" then
@@ -547,12 +547,12 @@ function antoralib:SetTheme(NewTheme)
 	end)
 end
 
-function antoralib:SetScale(NewScale)
+function destroyerlib:SetScale(NewScale)
 	NewScale = ViewportSize.Y / math.clamp(NewScale, 300, 2000)
 	UIScale, ScreenGui.Scale.Scale = NewScale, NewScale
 end
 
-function antoralib:MakeWindow(Configs)
+function destroyerlib:MakeWindow(Configs)
 	local WTitle = Configs[1] or Configs.Name or Configs.Title or "Antora Library"
 	local WMiniText = Configs[2] or Configs.SubTitle or "by: unkinou"
 	
@@ -574,7 +574,7 @@ function antoralib:MakeWindow(Configs)
 		end
 	end;LoadFile()
 	
-	local UISizeX, UISizeY = unpack(antoralib.Save.UISize)
+	local UISizeX, UISizeY = unpack(destroyerlib.Save.UISize)
 	local MainFrame = InsertTheme(Create("ImageButton", ScreenGui, {
 		Size = UDim2.fromOffset(UISizeX, UISizeY),
 		Position = UDim2.new(0.5, -UISizeX/2, 0.5, -UISizeY/2),
@@ -638,7 +638,7 @@ function antoralib:MakeWindow(Configs)
   }), "Text")
 	
 	local MainScroll = InsertTheme(Create("ScrollingFrame", Components, {
-		Size = UDim2.new(0, antoralib.Save.TabSize, 1, -TopBar.Size.Y.Offset),
+		Size = UDim2.new(0, destroyerlib.Save.TabSize, 1, -TopBar.Size.Y.Offset),
 		ScrollBarImageColor3 = Theme["Color Theme"],
 		Position = UDim2.new(0, 0, 1, 0),
 		AnchorPoint = Vector2.new(0, 1),
@@ -873,9 +873,9 @@ end
 	end
 	function Window:SelectTab(TabSelect)
 		if type(TabSelect) == "number" then
-			antoralib.Tabs[TabSelect].func:Enable()
+			destroyerlib.Tabs[TabSelect].func:Enable()
 		else
-			for _,Tab in pairs(antoralib.Tabs) do
+			for _,Tab in pairs(destroyerlib.Tabs) do
 				if Tab.Cont == TabSelect.Cont then
 					Tab.func:Enable()
 				end
@@ -889,7 +889,7 @@ end
 		local TName = Configs[1] or Configs.Title or "Tab!"
 		local TIcon = Configs[2] or Configs.Icon or ""
 		
-		TIcon = antoralib:GetIcon(TIcon)
+		TIcon = destroyerlib:GetIcon(TIcon)
 		if not TIcon:find("rbxassetid://") or TIcon:gsub("rbxassetid://", ""):len() < 6 then
 			TIcon = false
 		end
@@ -974,7 +974,7 @@ end
 			end
 			Container.Parent = Containers
 			Container.Size = UDim2.new(1, 0, 1, 150)
-			table.foreach(antoralib.Tabs, function(_,Tab)
+			table.foreach(destroyerlib.Tabs, function(_,Tab)
 				if Tab.Cont ~= Container then
 					Tab.func:Disable()
 				end
@@ -989,7 +989,7 @@ end
 		
 		FirstTab = true
 		local Tab = {}
-		table.insert(antoralib.Tabs, {TabInfo = {Name = TName, Icon = TIcon}, func = Tab, Cont = Container})
+		table.insert(destroyerlib.Tabs, {TabInfo = {Name = TName, Icon = TIcon}, func = Tab, Cont = Container})
 		Tab.Cont = Container
 		
 		function Tab:Disable()
@@ -1030,7 +1030,7 @@ end
 			}), "Text")
 			
 			local Section = {}
-			table.insert(antoralib.Options, {type = "Section", Name = SectionName, func = Section})
+			table.insert(destroyerlib.Options, {type = "Section", Name = SectionName, func = Section})
 			function Section:Visible(Bool)
 				if Bool == nil then SectionFrame.Visible = not SectionFrame.Visible return end
 				SectionFrame.Visible = Bool
@@ -1827,4 +1827,4 @@ end
 	return Window
 end
 
-return antoralib
+return destroyerlib
