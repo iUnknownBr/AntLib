@@ -39,7 +39,7 @@ local antoralib = {
     Options = {},
     Flags = {},
     Tabs = {},
-    Icons = loadstring(game:HttpGet("https://pastebin.com/raw/La8CxEK7"))()
+    Icons = loadstring(game:HttpGet("https://pastebin.com/raw/0Fifa23k"))()
 }
 
 local ViewportSize = workspace.CurrentCamera.ViewportSize
